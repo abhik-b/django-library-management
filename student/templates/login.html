@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+
+  <body>
+    {% if not user.is_anonymous %}
+    <h1>logged in as {{user}}</h1>
+    <a href="/student/logout/">Logout</a>
+    {% endif %}
+
+    <form action="/student/login/" method="POST">
+      {% csrf_token %}
+      <input name="studentID" type="text" placeholder="studentID" />
+      <input name="password" type="password" placeholder="password" />
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>

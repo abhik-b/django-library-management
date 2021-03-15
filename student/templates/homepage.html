@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage</title>
+  </head>
+
+  <body>
+    {% if message %}
+    <h1>{{message}}</h1>
+    <a href="/student/logout/">Logout</a>
+    {% endif %}
+
+    <h1>homepage</h1>
+    {% if user.is_anonymous %}
+    <h2>logged out</h2>
+    {% else %}
+    <h2>logged in as {{user}}</h2>
+    {% endif %}
+  </body>
+</html>
