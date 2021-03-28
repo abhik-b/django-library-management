@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # LOCAL
   'student',
+  'library',
     # 3RD PARTY
 
 ]
@@ -126,3 +127,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
+
+

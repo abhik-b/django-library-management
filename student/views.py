@@ -1,18 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Student,Department 
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.core.files.storage import FileSystemStorage
-
-
-
+from django.contrib import messages
 def home(request):
-    return render(request, 'homepage.html')
+    return render(request, 'home.html')
 
 
 def logout(request):
     auth.logout(request)
-    return render(request, 'homepage.html')
+    messages.success(request,'Logout successful')
+    return redirect('home')
 
 
 def login(request):
@@ -20,12 +18,12 @@ def login(request):
         user = auth.authenticate(request,
                                  username=request.POST['studentID'], 
                                  password=request.POST['password'])
-
-        if user is not None:
-            auth.login(request, user)
-            return render(request, 'homepage.html', {'message': 'logged in'})
+        if user is None:
+            return render(request, 'login.html', {"message": 'Invalid CREDENTIALS', 'user': user})
         else:
-            return render(request, 'login.html', {"error": 'Invalid credenTIALS', 'user': user})
+            auth.login(request, user)
+            messages.success(request,'Login successful')
+            return redirect('home')
     else:
         return render(request, 'login.html')
 
@@ -45,22 +43,11 @@ def signup(request):
             )
 
             auth.login(request,user)
-            return render(request,'homepage.html',{'message':"signed in"})
+            messages.success(request,'Signup successful')
+            return redirect('home')
 
     else:
         return render(request,'signup.html',{
             "departments":Department.objects.all()
         })
-
-def uploadfile_view(request):
-    if request.method=="POST":
-        f=request.FILES['file']
-        fs=FileSystemStorage()
-        filename,ext=str(f).split('.')
-        file1=fs.save(str(f),f)
-        fileurl=fs.url(file1)
-        fileSize=fs.size(file1)
-        return render(request,'upload.html',{'fileUrl':fileurl,'fileName':filename,'ext':ext,'fileSize':fileSize})
-    else:
-         return render(request,'upload.html',{})
 

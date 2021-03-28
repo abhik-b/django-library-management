@@ -1,0 +1,6 @@
+{% for fine in fines %}
+
+<div>
+  <h2>Fine of ₹{{fine.amount}} for Book :- {{fine.issue.book.name}}</h2>
+</div>
+{% endfor %}

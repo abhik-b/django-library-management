@@ -7,9 +7,9 @@
   </head>
 
   <body>
-    {% if not user.is_anonymous %}
-    <h1>logged in as {{user}}</h1>
-    <a href="/student/logout/">Logout</a>
+    {% if message %}
+    <h1>{{message}}</h1>
+
     {% endif %}
 
     <form action="/student/login/" method="POST">

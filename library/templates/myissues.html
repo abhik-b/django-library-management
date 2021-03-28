@@ -1,0 +1,17 @@
+<form method="GET" action="/my-issues/">
+  <button name="issued" type="submit">Issued Books</button>
+  <button name="notissued" type="submit">Not Issued Books</button>
+  <button name="all" type="submit">All Issues</button>
+</form>
+
+{% for issue in issues %}
+<div>
+  <h3>{{issue.book.name}} Issue Requested</h3>
+  <h4>{{issue.created_at}}</h4>
+  {% if issue.issued %}
+  <h5>Issued</h5>
+  {% else %}
+  <h5>Not issued</h5>
+  {% endif %}
+</div>
+{% endfor %}

@@ -1,9 +1,0 @@
-<form action="/student/upload/" method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  <input type="file" name="file" id="file" />
-  <button type="submit">Upload</button>
-</form>
-
-{% if fileUrl %}
-<a href="{{fileUrl}}">{{fileName}}</a>
-{% else %}{% endif %}

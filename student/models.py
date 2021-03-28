@@ -15,5 +15,8 @@ class Student(models.Model):
     student_id=models.OneToOneField(User,on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.first_name
+        last_4_digits=self.student_id.username[-4:]
+        return "{}_{}-{}".format(self.first_name,last_4_digits,self.department)
+    
+
     

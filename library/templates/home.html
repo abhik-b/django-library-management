@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage</title>
+  </head>
+
+  <body>
+    {% for message in messages %}
+    <div>{{message}}</div>
+    {% endfor %}
+    <h1>homepage</h1>
+    {% if user.is_anonymous %}
+    <h2>logged out</h2>
+    {% else %}
+    <h2>logged in as {{user}}</h2>
+    <a href="/student/logout/">Logout</a>
+    {% endif %}
+    <nav>
+      <a href="/student/login/">Login</a>
+      <a href="/addbook/">Add Book</a>
+      <a href="/student/signup/">Signup</a>
+    </nav>
+    <!-- searchbar -->
+
+    <form action="/search/">
+      <label for="search-query">Search</label>
+      <input type="text" name="search-query" id="search" />
+      <button name="author">Search Author</button>
+      <button name="book">Search Book</button>
+    </form>
+
+    <!-- all books -->
+
+    {% for book in books %}
+    <div>
+      <h2>{{book.name}}</h2>
+      <h4>{{book.author}}</h4>
+      <img
+        src="{{book.image.url}}"
+        alt="{{book.name}}"
+        height="150"
+        width="150"
+      />
+      {% if not user.is_superuser and not user.is_anonymous %}
+      <a href="/request-book-issue/{{book.id}}/">Request Issue</a>
+      {% endif %} {% if user.is_superuser %}
+      <a href="/deletebook/{{book.id}}/">Delete</a>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <!-- author search results -->
+    {% for author in author_results %}
+    <div>
+      <h1>{{author.name}}</h1>
+      {% for book in author.book_set.all %}
+      <div>
+        <h2>{{book.name}}</h2>
+        <img
+          src="{{book.image.url}}"
+          alt="{{book.name}}"
+          height="150"
+          width="150"
+        />
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+    <!-- book results -->
+    {% for book in books_results %}
+    <div>
+      <h2>{{book.name}}</h2>
+      <h4>{{book.author}}</h4>
+      <img
+        src="{{book.image.url}}"
+        alt="{{book.name}}"
+        height="150"
+        width="150"
+      />
+    </div>
+    {% endfor %}
+  </body>
+</html>
