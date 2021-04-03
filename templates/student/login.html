@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block heading %} Login {% endblock heading %}
+
+
+{% block content %}
+<form class="w-2xl sm:w-1/2 max-w-xs flex flex-col mx-auto " action="/student/login/" method="POST">
+  {% csrf_token %}
+  <div class="w-1/2  max-w-xs flex flex-col sm:flex-row mt-4  sm:items-center"></div>
+    <label class="text-3xl" for="studentID">StudentID</label>
+    <input
+      class="px-2 py-1 bg-transparent border-white border-2 h-lg mt-4 rounded text-gray-100"
+      name="studentID"
+      type="text"
+      placeholder="studentID"
+    />
+  </div>
+  <div class="w-1/2 max-w-xs flex flex-col sm:flex-row mt-4 sm:items-center"></div>
+    <label class="text-3xl" for="password">Password</label>
+    <input
+      class="px-2 py-1 bg-transparent border-white border-2 mt-4  rounded text-gray-100"
+      name="password"
+      type="password"
+      placeholder="password"
+    />
+  </div>
+  {% if request.GET.next %}
+  <input type="hidden" name="next" value="{{request.GET.next}}" />
+  {% endif %}
+  <button class="text-white hover:shadow-md text-xl rounded bg-pink-500 px-4 py-2 mt-8 " type="submit">Submit</button>
+</form>
+
+{% endblock content %}

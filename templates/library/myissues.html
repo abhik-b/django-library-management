@@ -1,0 +1,59 @@
+{% extends 'base.html' %} {% block heading %} My Issues {% endblock heading %}
+{% block content %}
+
+<form
+  class="flex flex-col sm:flex-row items-center justify-start"
+  method="GET"
+  action="/my-issues/"
+>
+  <button
+    class="text-gray-900 w-1/2 hover:shadow-md text-md rounded bg-yellow-400 px-4 py-2"
+    name="all"
+    type="submit"
+  >
+    All Issues
+  </button>
+  <button
+    class="text-white ml-0 mt-4 w-1/2 sm:mt-0 sm:ml-8 hover:shadow-md text-md rounded bg-green-600 px-4 py-2"
+    name="issued"
+    type="submit"
+  >
+    Issued Books
+  </button>
+  <button
+    class="text-white ml-0 w-1/2 mt-4 sm:mt-0 sm:ml-8 hover:shadow-md text-md rounded bg-red-500 px-4 py-2"
+    name="notissued"
+    type="submit"
+  >
+    Not Issued Books
+  </button>
+</form>
+<ul class="list-disc px-4 mt-8">
+  {% for issue in issues %}
+  <li class="">
+    <h3 class="text-xl font-semibold tracking-wide">
+      {{issue.book.name}} Issue Requested
+    </h3>
+    <h4 class="text-xs">{{issue.created_at}}</h4>
+    <div class="flex flex-row w-2/3 space-x-4 mt-4 mb-8">
+      {% if issue.issued %}
+      <h5 class="w-xs rounded font-bold text-green-500 px-4 py-1">Issued</h5>
+      {% else %}
+      <h5 class="w-xs rounded font-bold text-white-500 px-4 py-1 bg-purple-800">
+        Not issued
+      </h5>
+      {% endif %} {% if issue.returned %}
+      <h5 class="w-xs rounded font-bold text-green-500 px-4 py-1">Returned</h5>
+      {% else %}
+      <h5 class="w-xs rounded font-bold text-white-500 px-4 py-1 bg-red-500">
+        Not Returned
+      </h5>
+    </div>
+    {% endif %}
+  </li>
+  {% empty %}
+  <h2>Nothing Found</h2>
+  {% endfor %}
+</ul>
+
+{% endblock %}

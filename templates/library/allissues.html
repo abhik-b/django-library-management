@@ -1,0 +1,63 @@
+{% extends 'base.html' %} {% block heading %} All Issues {% endblock heading %}
+{% block content %}
+<form
+  class="w-full flex flex-col sm:flex-row sm:items-center"
+  action="/all-issues/"
+>
+  <label class="text-lg" for="studentID">Search Student :</label>
+  <input
+    class="w-full sm:w-1/3 px-2 py-1 bg-transparent border-white border-2 mt-4 sm:mt-0 sm:mx-5 rounded text-white placeholder-gray-700"
+    type="text"
+    name="studentID"
+    id="search"
+    placeholder="student id only"
+  />
+  <button
+    class="text-white hover:shadow-md rounded mt-4 sm:mt-0 bg-blue-500 px-4 py-1"
+  >
+    Search
+  </button>
+</form>
+
+<!--  -->
+<ul class="list-disc px-4 mt-8">
+  {% for issue in issues %}
+  <li>
+    <h3 class="text-xl tracking-wide">
+      <span class="font-bold">{{issue.book.name}}</span> Issue Requested by
+      <a
+        target="_blank"
+        href="/admin/student/student/{{issue.student.id}}/"
+        class="font-bold hover:underline"
+      >
+        {{issue.student.student_id.username}}_{{issue.student.first_name}}</a
+      >
+    </h3>
+    <h4 class="text-xs">Created at:-{{issue.created_at}}</h4>
+    <div class="flex flex-row w-2/3 space-x-4 mt-4 mb-8">
+      {% if user.is_superuser %} {% if issue.issued %}
+      <h5 class="w-xs rounded text-md font-bold text-green-500 px-4 py-1">
+        Issued
+      </h5>
+      {%if issue.returned %}
+      <h5 class="w-xs rounded font-bold text-green-500 px-4 py-1">Returned</h5>
+      {% else %}
+      <a
+        class="w-xs rounded bg-green-500 px-4 py-1 text-white"
+        href="/returnbook/{{issue.id}}/"
+        >return book</a
+      >
+      {% endif %} {% else %}
+      <a
+        class="w-xs rounded bg-blue-500 px-4 py-1 text-white"
+        href="/issuebook/{{issue.id}}/"
+        >issue book</a
+      >
+      {% endif %} {% endif %}
+    </div>
+  </li>
+  {% empty %}
+  <h2>Nothing Found</h2>
+  {% endfor %}
+</ul>
+{% endblock %}

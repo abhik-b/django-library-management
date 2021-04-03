@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.utils import timezone
 import datetime
 from .utilities import calcFine
+from django.db.models import Q
 from django.contrib.auth.models import User
 
 
@@ -14,17 +15,17 @@ from django.contrib.auth.models import User
 # Book
 def allbooks(request):
     allbooks=Book.objects.all()
-    return render(request,'home.html',{'books':allbooks})
+    return render(request,'library/home.html',{'books':allbooks})
 
 def search(request):
     search_query=request.GET.get('search-query')
     search_by_author=request.GET.get('author')
     if search_by_author is not None:
         author_results=Author.objects.filter(name__icontains=search_query)
-        return render(request,'home.html',{'author_results':author_results})
+        return render(request,'library/home.html',{'author_results':author_results})
     else:
-        books_results=Book.objects.filter(name__icontains=search_query)
-        return render(request,'home.html',{'books_results':books_results})
+        books_results=Book.objects.filter(Q(name__icontains=search_query) | Q(category__icontains=search_query))
+        return render(request,'library/home.html',{'books_results':books_results})
 
 
 
@@ -38,12 +39,14 @@ def addbook(request):
         author=Author.objects.get(id=request.POST['author'])
         image=request.FILES['book-image']
         if author is not None or author != '':
-            newbook=Book.objects.get_or_create(name=name,image=image,category=category,author=author)
-            return render(request,'addbook.html',{'authors':authors,'message':'added successfully'})
+            newbook,created=Book.objects.get_or_create(name=name,image=image,category=category,author=author)
+            messages.success(request,'Book - {} Added succesfully '.format(newbook.name))
+            return render(request,'library/addbook.html',{'authors':authors,})
         else:
-            return render(request,'addbook.html',{'authors':authors,'message':'Author error'})
+            messages.error(request,'Author not found !')
+            return render(request,'library/addbook.html',{'authors':authors,})
     else:
-        return render(request,'addbook.html',{'authors':authors})
+        return render(request,'library/addbook.html',{'authors':authors})
 
 
 
@@ -80,7 +83,7 @@ def myissues(request):
     else:
         issues=Issue.objects.filter(student=student)
 
-    return render(request,'myissues.html',{'issues':issues})
+    return render(request,'library/myissues.html',{'issues':issues})
 
 
 @login_required(login_url='/admin/')
@@ -98,7 +101,7 @@ def allissues(request):
 
     else:
         issues=Issue.objects.all()
-        return render(request,'allissues.html',{'issues':issues})
+        return render(request,'library/allissues.html',{'issues':issues})
 
 
 
@@ -133,7 +136,7 @@ def myfines(request):
     for issue in issues:
         calcFine(issue)
     fines=Fine.objects.filter(student=student)
-    return render(request,'myfines.html',{'fines':fines})
+    return render(request,'library/myfines.html',{'fines':fines})
 
 
 @login_required(login_url='/student/login/')
@@ -153,7 +156,7 @@ def allfines(request):
             return redirect('/all-fines/')
     else:
         fines=Fine.objects.all()
-        return render(request,'allfines.html',{'fines':fines})
+        return render(request,'library/allfines.html',{'fines':fines})
 
 @login_required(login_url='/student/login/')
 @user_passes_test(lambda u:  u.is_superuser ,login_url='/admin/')

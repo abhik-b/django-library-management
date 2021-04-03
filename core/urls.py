@@ -19,6 +19,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+admin.site.index_title='Library Management'
+admin.site.site_header='Admin Dashboard' 
+
+
+# 
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('student/',include('student.urls')),

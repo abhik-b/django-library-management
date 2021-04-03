@@ -1,0 +1,68 @@
+<nav
+  class="container md:mx-auto max-w-5xl p-2 border-b-2 border-pink-500 sm:place-items-center flex flex-col sm:flex-row justify-between"
+>
+  <div class="justify-between sm:justify-start w-full flex">
+    <a class="font-bold text-pink-500 text-xl sm:text-3xl" href="/"
+      >Library Management</a
+    >
+    <button id="ham" class="w-8 sm:hidden">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <ul
+    id="menu"
+    class="w-full pr-2 lg:pr-4 xl:pr-0 lg:w-2/3 justify-end items-end sm:items-center flex flex-col sm:flex-row space-x-4"
+  >
+    {% if user.is_anonymous %}
+    <li><a class="hover:underline" href="/student/login">Login</a></li>
+    <li><a class="hover:underline" href="/student/signup">Signup</a></li>
+    <li><a class="hover:underline" href="/admin/">Admin Login</a></li>
+    {% elif user.is_superuser %}
+    <!-- <li><a class="hover:underline" href="/addbook/">Add Book</a></li> -->
+    <li><a class="hover:underline" href="/all-issues/">All Issues</a></li>
+    <!-- <li><a class="hover:underline" href="/all-fines/">All Fines</a></li> -->
+    <li><a class="hover:underline" href="/admin/">Admin DashBoard</a></li>
+    <li><a class="hover:underline" href="/student/logout">Logout</a></li>
+    {% else %}
+    <li><a class="hover:underline" href="/my-issues/">My Issues</a></li>
+    <li><a class="hover:underline" href="/my-fines/">My Fines</a></li>
+    <li><a class="hover:underline" href="/student/logout">Logout</a></li>
+    {% endif %}
+  </ul>
+</nav>
+
+<script>
+  const ham = document.querySelector("#ham");
+  const menu = document.querySelector("#menu");
+  ham.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+
+  window.addEventListener("load", () => {
+    if (window.matchMedia("(min-width: 640px)").matches) {
+      menu.classList.remove("hidden");
+    } else {
+      menu.classList.add("hidden");
+    }
+  });
+  window.addEventListener("resize", () => {
+    if (window.matchMedia("(min-width: 640px)").matches) {
+      menu.classList.remove("hidden");
+    } else {
+      menu.classList.add("hidden");
+    }
+  });
+</script>

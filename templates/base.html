@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Management</title>
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      button:hover {
+        transform: scale(1.1);
+        transition: 0.2s ease-in-out;
+      }
+      .success {
+        color: rgb(0, 226, 132);
+      }
+      .error {
+        color: rgb(255, 58, 58);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-900 text-white">
+    <!-- Navbar -->
+    {% include 'nav.html' %}
+    <!-- Title of the page -->
+    <header
+      class="flex flex-row justify-between items-end mb-5 md:mx-auto max-w-5xl p-2"
+    >
+      <h1 class="font-bold text-lg sm:text-xl capitalize">
+        {%block heading %}{% endblock heading %}
+      </h1>
+      {% if user.is_anonymous %}
+      <h2 class="text-red-400 sm:pr-5 xl:pr-3">logged out</h2>
+      {% else %}
+      <h2 class="text-green-400">logged in as {{user}}</h2>
+      {% endif %}
+    </header>
+    <section class="container md:mx-auto max-w-5xl">
+      {% for message in messages %}
+      <h3
+        {%
+        if
+        message.tags
+        %}
+        class="{{ message.tags }} p-2  font-bold tracking-wider text-lg"
+        {%
+        endif
+        %}
+      >
+        {{message}}
+      </h3>
+      {%endfor %}
+    </section>
+    <!-- Content -->
+    <main class="container md:mx-auto max-w-5xl p-2">
+      {% block content %}{% endblock content %}
+    </main>
+    <!-- Footer -->
+    {% include 'footer.html' %}
+  </body>
+</html>

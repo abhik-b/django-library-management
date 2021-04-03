@@ -1,0 +1,17 @@
+{% extends 'base.html' %} {%block heading %} My Fines {% endblock heading %}
+<!--  -->
+{%block content %}
+<ul class="list-disc px-4 mt-2">
+  {% for fine in fines %}
+
+  <li>
+    <h2>
+      Fine of <span class="text-black text-red-500">₹{{fine.amount}}</span> for
+      Book :- {{fine.issue.book.name}}
+    </h2>
+  </li>
+  {% empty %}
+  <h2>Nothing Found</h2>
+  {% endfor %}
+</ul>
+{% endblock content %}
