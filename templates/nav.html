@@ -29,10 +29,10 @@
     {% if user.is_anonymous %}
     <li><a class="hover:underline" href="/student/login">Login</a></li>
     <li><a class="hover:underline" href="/student/signup">Signup</a></li>
-    <li><a class="hover:underline" href="/admin/">Admin Login</a></li>
+    <li><a class="hover:underline" href="/admin/">Admin Dashboard</a></li>
     {% elif user.is_superuser %}
     <!-- <li><a class="hover:underline" href="/addbook/">Add Book</a></li> -->
-    <li><a class="hover:underline" href="/all-issues/">All Issues</a></li>
+    <li><a class="hover:underline" href="/all-issues/"> Issue Requests</a></li>
     <!-- <li><a class="hover:underline" href="/all-fines/">All Fines</a></li> -->
     <li><a class="hover:underline" href="/admin/">Admin DashBoard</a></li>
     <li><a class="hover:underline" href="/student/logout">Logout</a></li>

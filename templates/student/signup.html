@@ -8,7 +8,7 @@
   <div class="w-1/2  max-w-xs flex flex-col sm:flex-row mt-4  sm:items-center"></div>
     <label class="text-xl" for="firstname">Firstname</label>
     <input
-      class="px-2 py-1 bg-transparent border-white border-2 h-lg mt-2 rounded text-gray-800"
+      class="px-2 py-1 bg-transparent border-white border-2 h-lg mt-2 rounded "
       name="firstname"
       type="text"
       placeholder="firstname"
@@ -17,7 +17,7 @@
   <div class="w-1/2 max-w-xs flex flex-col sm:flex-row mt-4 sm:items-center"></div>
     <label class="text-xl" for="lastname">Lastname</label>
     <input
-      class="px-2 py-1 bg-transparent border-white border-2 mt-2  rounded text-gray-800"
+      class="px-2 py-1 bg-transparent border-white border-2 mt-2  rounded "
       name="lastname"
       type="password"
       placeholder="lastname"
@@ -25,17 +25,21 @@
   </div>
   <div class="w-1/2  max-w-xs flex flex-col sm:flex-row mt-4  sm:items-center"></div>
   <label class="text-xl" for="studentID">StudentID</label>
+  
   <input
-    class="px-2 py-1 bg-transparent border-white border-2 h-lg mt-2 rounded text-gray-800"
+    class="px-2 py-1 bg-transparent border-white border-2 h-lg mt-2 rounded "
     name="studentID"
     type="text"
+    id="studentID"
     placeholder="studentID"
   />
+  <p id="studentID-error" class="hidden text-red-400 py-1">User exists already </p>
+</div>
 </div>
 <div class="w-1/2 max-w-xs flex flex-col sm:flex-row mt-4 sm:items-center"></div>
   <label class="text-xl" for="password">Password</label>
   <input
-    class="px-2 py-1 bg-transparent border-white border-2 mt-2  rounded text-gray-800"
+    class="px-2 py-1 bg-transparent border-white border-2 mt-2  rounded "
     name="password"
     type="password"
     placeholder="password"
@@ -53,4 +57,17 @@
   
 <button class="text-white hover:shadow-md text-xl rounded bg-green-500 px-4 py-2 mt-8 " type="submit">Submit</button>
 </form>
+
+
+<script>
+const users="{{users | escapejs}}"; 
+const idField=document.querySelector('#studentID');
+const idError=document.querySelector('#studentID-error');
+idField.addEventListener('input',()=>{
+  idError.classList.add('hidden')
+  if (users.includes(idField.value)){
+    idError.classList.remove('hidden')
+  }
+})
+</script>
 {% endblock content %}

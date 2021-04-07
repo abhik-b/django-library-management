@@ -1,5 +1,7 @@
 from django.db import models
 from student.models import Student
+import datetime
+from django.utils import timezone
 # Create your models here.
 class Author(models.Model):
     name=models.CharField(max_length=350)
@@ -27,6 +29,21 @@ class Issue(models.Model):
 
     def __str__(self):
         return "{}_{} book issue request".format(self.student,self.book)
+
+    def days_no(self):
+        "Returns the no. of days before returning / after return_date."
+        if self.issued:
+            y,m,d=str(timezone.now().date()).split('-')
+            today=datetime.date(int(y),int(m),int(d))
+            y2,m2,d2=str(self.return_date.date()).split('-')
+            lastdate=datetime.date(int(y2),int(m2),int(d2))
+            print(lastdate-today,lastdate>today)
+            if lastdate > today:
+                return "{} left".format(str(lastdate-today).split(',')[0])
+            else:
+                return "{} passed".format(str(today-lastdate).split(',')[0])
+        else:
+            return ""
     
 class Fine(models.Model):
     student=models.ForeignKey(Student,on_delete=models.CASCADE)

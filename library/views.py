@@ -6,26 +6,30 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from django.utils import timezone
 import datetime
-from .utilities import calcFine
+from .utilities import calcFine,getmybooks
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.contrib import auth
 
 
 
 # Book
 def allbooks(request):
+    requestedbooks,issuedbooks=getmybooks(request.user)
     allbooks=Book.objects.all()
-    return render(request,'library/home.html',{'books':allbooks})
+    return render(request,'library/home.html',{'books':allbooks,'issuedbooks':issuedbooks,'requestedbooks':requestedbooks})
 
 def search(request):
     search_query=request.GET.get('search-query')
     search_by_author=request.GET.get('author')
+    requestedbooks,issuedbooks=getmybooks(request.user)
+
     if search_by_author is not None:
         author_results=Author.objects.filter(name__icontains=search_query)
-        return render(request,'library/home.html',{'author_results':author_results})
+        return render(request,'library/home.html',{'author_results':author_results,'issuedbooks':issuedbooks,'requestedbooks':requestedbooks})
     else:
         books_results=Book.objects.filter(Q(name__icontains=search_query) | Q(category__icontains=search_query))
-        return render(request,'library/home.html',{'books_results':books_results})
+        return render(request,'library/home.html',{'books_results':books_results,'issuedbooks':issuedbooks,'requestedbooks':requestedbooks})
 
 
 
@@ -65,42 +69,54 @@ def deletebook(request,bookID):
 @login_required(login_url='/student/login/')
 @user_passes_test(lambda u: not u.is_superuser,login_url='/student/login/')
 def issuerequest(request,bookID):
-    book=Book.objects.get(id=bookID)
-    student=Student.objects.filter(student_id=request.user)[0]
-    issue,created=Issue.objects.get_or_create(book=book,student=student)
-    messages.success(request,'Book - {} Requested succesfully '.format(book.name))
-    return redirect('home')
+    student=Student.objects.filter(student_id=request.user)
+    if student:
+        book=Book.objects.get(id=bookID)
+        issue,created=Issue.objects.get_or_create(book=book,student=student[0])
+        messages.success(request,'Book - {} Requested succesfully '.format(book.name))
+        return redirect('home')
+    
+    messages.error(request,'You are Not a Student !')
+    return redirect('/')
 
 @login_required(login_url='/student/login/')
 @user_passes_test(lambda u: not u.is_superuser ,login_url='/student/login/')
 def myissues(request):
-    student=Student.objects.filter(student_id=request.user)[0]
-    
-    if request.GET.get('issued') is not None:
-        issues=Issue.objects.filter(student=student,issued=True)
-    elif request.GET.get('notissued') is not None:
-        issues=Issue.objects.filter(student=student,issued=False)
-    else:
-        issues=Issue.objects.filter(student=student)
+    if Student.objects.filter(student_id=request.user):
+        student=Student.objects.filter(student_id=request.user)[0]
+        
+        if request.GET.get('issued') is not None:
+            issues=Issue.objects.filter(student=student,issued=True)
+        elif request.GET.get('notissued') is not None:
+            issues=Issue.objects.filter(student=student,issued=False)
+        else:
+            issues=Issue.objects.filter(student=student)
 
-    return render(request,'library/myissues.html',{'issues':issues})
+        return render(request,'library/myissues.html',{'issues':issues})
+    
+    messages.error(request,'You are Not a Student !')
+    return redirect('/')
 
 
 @login_required(login_url='/admin/')
 @user_passes_test(lambda u:  u.is_superuser ,login_url='/admin/')
-def allissues(request):
+def requestedissues(request):
     if request.GET.get('studentID') is not None and request.GET.get('studentID') != '':
         try:
             user= User.objects.get(username=request.GET.get('studentID'))
-            student=Student.objects.filter(student_id=user)[0]
-            issues=Issue.objects.filter(student=student)
-            return render(request,'allissues.html',{'issues':issues})
+            student=Student.objects.filter(student_id=user)
+            if student:
+                student=student[0]
+                issues=Issue.objects.filter(student=student,issued=False)
+                return render(request,'library/allissues.html',{'issues':issues})
+            messages.error(request,'No Student found')
+            return redirect('/all-issues/') 
         except User.DoesNotExist:
-            messages.error(request,'No user found')
+            messages.error(request,'No Student found')
             return redirect('/all-issues/')
 
     else:
-        issues=Issue.objects.all()
+        issues=Issue.objects.filter(issued=False)
         return render(request,'library/allissues.html',{'issues':issues})
 
 
@@ -131,12 +147,15 @@ def return_book(request,issueID):
 @login_required(login_url='/student/login/')
 @user_passes_test(lambda u: not u.is_superuser ,login_url='/student/login/')
 def myfines(request):
-    student=Student.objects.filter(student_id=request.user)[0]
-    issues=Issue.objects.filter(student=student)
-    for issue in issues:
-        calcFine(issue)
-    fines=Fine.objects.filter(student=student)
-    return render(request,'library/myfines.html',{'fines':fines})
+    if Student.objects.filter(student_id=request.user):
+        student=Student.objects.filter(student_id=request.user)[0]
+        issues=Issue.objects.filter(student=student)
+        for issue in issues:
+            calcFine(issue)
+        fines=Fine.objects.filter(student=student)
+        return render(request,'library/myfines.html',{'fines':fines})
+    messages.error(request,'You are Not a Student !')
+    return redirect('/')
 
 
 @login_required(login_url='/student/login/')
@@ -145,18 +164,7 @@ def allfines(request):
     issues=Issue.objects.all()
     for issue in issues:
         calcFine(issue)
-    if request.GET.get('studentID') is not None and request.GET.get('studentID') != '':
-        try:
-            user= User.objects.get(username=request.GET.get('studentID'))
-            student=Student.objects.filter(student_id=user)[0]
-            fines=Fine.objects.filter(student=student)
-            return render(request,'allfines.html',{'fines':fines})
-        except User.DoesNotExist:
-            messages.error(request,'No user found')
-            return redirect('/all-fines/')
-    else:
-        fines=Fine.objects.all()
-        return render(request,'library/allfines.html',{'fines':fines})
+    return redirect('/admin/library/fine/')
 
 @login_required(login_url='/student/login/')
 @user_passes_test(lambda u:  u.is_superuser ,login_url='/admin/')

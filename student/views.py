@@ -38,8 +38,10 @@ def login(request):
         user = auth.authenticate(request,
                                  username=request.POST['studentID'], 
                                  password=request.POST['password'])
+        print(user)                        
         if user is None:
-            return render(request, 'student/login.html', {"message": 'Invalid CREDENTIALS', 'user': user})
+            messages.error(request,'Invalid CREDENTIALS')
+            return redirect('/student/login/')
         else:
             auth.login(request, user)
             messages.success(request,'Login successful')
@@ -55,7 +57,9 @@ def signup(request):
     if request.method=='POST':
         try:
             user=User.objects.get(username=request.POST['studentID'])
-            return render(request,'student/signup.html',{"message":"user exists already !!", "departments":Department.objects.all()})
+            messages.success(request,'user exists already !!')
+            return redirect('/student/login/')
+            
 
         except User.DoesNotExist:
             user=User.objects.create_user(username=request.POST['studentID'],password=request.POST['password'])
@@ -72,6 +76,7 @@ def signup(request):
 
     else:
         return render(request,'student/signup.html',{
-            "departments":Department.objects.all()
+            "departments":Department.objects.all(),
+            "users":list(User.objects.values_list('username',flat=True))
         })
 

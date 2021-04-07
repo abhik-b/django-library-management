@@ -69,4 +69,5 @@ class AuthorAdmin(admin.ModelAdmin):
         BookInline,
     ]
     list_per_page=30
-    
+ 
+

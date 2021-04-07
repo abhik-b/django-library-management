@@ -1,8 +1,10 @@
 import datetime
 from django.utils import timezone
-from .models import Fine
+from .models import Fine,Book
+from student.models import Student
 
 def calcFine(issue):
+    "Calculate fines of each issue if any"
     if(issue.issued==True and issue.returned==False):
         y,m,d=str(timezone.now().date()).split('-')
         today=datetime.date(int(y),int(m),int(d))
@@ -17,3 +19,19 @@ def calcFine(issue):
             return 'no fine'
     else:
         return 'no fine'
+    
+def getmybooks(user):
+    "Get issued books or requested books of a student "
+    requestedbooks=[]
+    issuedbooks=[]
+    if user.is_authenticated:
+        student = Student.objects.filter(student_id=user)
+        if student:
+            for b in Book.objects.all():
+                for i in b.issue_set.all():
+                    if i.student==student[0]:
+                        if i.issued:
+                            issuedbooks.append(b)
+                        else:
+                            requestedbooks.append(b)
+    return [requestedbooks,issuedbooks]
