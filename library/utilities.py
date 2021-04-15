@@ -21,7 +21,7 @@ def calcFine(issue):
         return 'no fine'
     
 def getmybooks(user):
-    "Get issued books or requested books of a student "
+    "Get issued books or requested books of a student, takes a user & returns a tuple "
     requestedbooks=[]
     issuedbooks=[]
     if user.is_authenticated:

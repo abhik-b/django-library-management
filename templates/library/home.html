@@ -2,7 +2,6 @@
 <!--  -->
 {% block content %}
 <!-- searchbar -->
-
 <form class="flex sm:flex-row flex-col" action="/search/">
   <div
     class="w-full md:w-1/2 l:w-1/3 flex flex-col sm:flex-row sm:items-center"
@@ -76,7 +75,7 @@
 </ul>
 
 <!-- author search results -->
-{% for author in author_results %}
+{% if 'author' in request.get_full_path %} {% for author in author_results %}
 
 <div {% if not forloop.first %} class="my-8" {% endif %}>
   <h1 class="text-lg font-bold mb-2">{{author.name}}</h1>
@@ -103,13 +102,15 @@
     </li>
 
     {%empty %}
-    <h2>Not found</h2>
+    <h2>No Books</h2>
     {% endfor %}
   </ul>
 </div>
-{% endfor %}
-
+{%empty %}
+<h2>Not Found</h2>
+{% endfor %} {% endif %}
 <!-- book results -->
+{% if 'book' in request.get_full_path %}
 <ul
   class="mt-10 md:px-4 lg:px-12 xl:px-0 grid grid-cols-2 md:grid-cols-4 justify-items-center"
 >
@@ -144,6 +145,8 @@
     >
     {% endif %}
   </li>
+  {%empty %}
+  <h2>No Books Found</h2>
   {% endfor %}
 </ul>
-{% endblock content %}
+{% endif %} {% endblock content %}

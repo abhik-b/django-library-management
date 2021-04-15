@@ -8,23 +8,6 @@ from django.core.files.storage import FileSystemStorage
 
 
 
-def uploadfile_view(request):
-    fileContext=[]
-    if request.method=="POST":
-        files=request.FILES.getlist('file')
-        fs=FileSystemStorage()
-        for f in files:
-            filename,ext=str(f).split('.')
-            file1=fs.save(str(f),f)
-            fileurl=fs.url(file1)
-            fileSize=fs.size(file1)
-            fileContext.append({'fileUrl':fileurl,'fileName':filename,'ext':ext,'fileSize':fileSize})
-        return render(request,'student/fileupload.html',{'fileContext':fileContext})
-    else:
-         return render(request,'student/fileupload.html',{})
-
-def home(request):
-    return render(request, 'home.html')
 
 
 def logout(request):
