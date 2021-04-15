@@ -3,15 +3,21 @@
 {%block content %}
 <ul class="list-disc px-4 mt-2">
   {% for fine in fines %}
-
   <li>
     <h2>
       Fine of <span class="text-black text-red-500">₹{{fine.amount}}</span> for
       Book :- {{fine.issue.book.name}}
     </h2>
+    {%if fine.paid %}
+    <p>Paid</p>
+    {% else %}
+    <a
+      class="text-gray-900 w-1/2 hover:shadow-md text-md rounded bg-purple-400 px-4 py-2"
+      href="/payfines/{{fine.id}}/"
+      >Pay</a
+    >
+    {% endif %}
   </li>
-  {% empty %}
-  <h2>Nothing Found</h2>
   {% endfor %}
 </ul>
 {% endblock content %}

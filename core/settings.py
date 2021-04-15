@@ -132,3 +132,6 @@ MEDIA_URL = '/media/'
 STATICFILES_DIRS=[
     os.path.join(BASE_DIR,'static')
 ]
+
+RAZORPAY_KEY_ID='rzp_test_CWLIScpEnbRpw7'
+RAZORPAY_KEY_SECRET='fEVERgb1O7TavSEvPeJdmBIG'
