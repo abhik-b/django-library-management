@@ -50,8 +50,9 @@ class Fine(models.Model):
     issue=models.ForeignKey(Issue,on_delete=models.CASCADE)
     amount=models.DecimalField(default=0.00,max_digits=10,decimal_places=2)
     paid=models.BooleanField(default=False)
-    order_id = models.CharField(unique=True, max_length=300, null=True, blank=True, default=None) 
+    order_id = models.CharField(unique=True, max_length=500, null=True, blank=True, default=None) 
     datetime_of_payment = models.DateTimeField(auto_now=False,null=True,blank=True)
+    
     # related to razorpay
     razorpay_order_id = models.CharField(max_length=500, null=True, blank=True)
     razorpay_payment_id = models.CharField(max_length=500, null=True, blank=True)
@@ -59,7 +60,7 @@ class Fine(models.Model):
 
     def save(self, *args, **kwargs):
         if self.order_id is None :
-            self.order_id = self.student.student_id.username+ timezone.now().strftime('%d-%m-%Y-%H-%M-%S') 
+            self.order_id = "{}_{}_{}".format(self.student.department,self.student.student_id.username,timezone.now().strftime('%H%M%S') )  
         return super().save(*args, **kwargs)
 
     def __str__(self):
