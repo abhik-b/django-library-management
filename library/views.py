@@ -10,14 +10,28 @@ from .utilities import calcFine,getmybooks
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib import auth
-
+from core import settings
 
 
 # Book
 def allbooks(request):
     requestedbooks,issuedbooks=getmybooks(request.user)
     allbooks=Book.objects.all()
+    
     return render(request,'library/home.html',{'books':allbooks,'issuedbooks':issuedbooks,'requestedbooks':requestedbooks})
+
+
+def sort(request):
+    sort_type=request.GET.get('sort_type')
+    sort_by=request.GET.get('sort')
+    requestedbooks,issuedbooks=getmybooks(request.user)
+    if 'author' in sort_type:
+        author_results=Author.objects.filter(name__startswith=sort_by)
+        return render(request,'library/home.html',{'author_results':author_results,'issuedbooks':issuedbooks,'requestedbooks':requestedbooks,'selected':'author'})
+    else:
+        books_results=Book.objects.filter(name__startswith=sort_by)
+        return render(request,'library/home.html',{'books_results':books_results,'issuedbooks':issuedbooks,'requestedbooks':requestedbooks,'selected':'book'})
+
 
 def search(request):
     search_query=request.GET.get('search-query')
@@ -172,3 +186,53 @@ def deletefine(request,fineID):
     fine=Fine.objects.get(id=fineID)
     fine.delete()
     return redirect('/all-fines/')
+
+import razorpay
+razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+@login_required(login_url='/student/login/')
+@user_passes_test(lambda u: not u.is_superuser ,login_url='/student/login/')
+def payfine(request,fineID):
+    fine=Fine.objects.get(id=fineID)
+    order_amount = int(fine.amount)*100
+    order_currency = 'INR'
+    order_receipt = fine.order_id
+    
+    
+    razorpay_order=razorpay_client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, ))
+    print(razorpay_order)
+    
+    
+    return render(request,'library/payfine.html',
+    {'amount':order_amount,'razor_id':settings.RAZORPAY_KEY_ID,
+    'reciept':razorpay_order['id'],
+    'amount_displayed':order_amount / 100,
+    'address':'a custom address',
+    'fine':fine, 
+    })
+
+
+@login_required(login_url='/student/login/')
+@user_passes_test(lambda u: not u.is_superuser ,login_url='/student/login/')
+def pay_status(request,fineID):
+    if request.method == 'POST':
+        params_dict={
+            'razorpay_payment_id':request.POST['razorpay_payment_id'],
+            'razorpay_order_id':request.POST['razorpay_order_id'],
+            'razorpay_signature':request.POST['razorpay_signature'],
+        }
+        try:
+            status=razorpay_client.utility.verify_payment_signature(params_dict)
+            if status is None:
+                fine=Fine.objects.get(id=fineID)
+                fine.paid=True
+                fine.datetime_of_payment=timezone.now()
+                fine.razorpay_payment_id=request.POST['razorpay_payment_id']
+                fine.razorpay_signature=request.POST['razorpay_signature']
+                fine.razorpay_order_id = request.POST['razorpay_order_id']
+                fine.save()
+                
+            messages.success(request,'Payment Succesfull')
+        except:
+            messages.error(request,'Payment Failure')
+    return redirect('/my-fines/')

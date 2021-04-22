@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+<!--  -->
+{%block heading %} Confirm Fine payment {% endblock heading %}
+
+<!--  -->
+{%block content %}
+<style>
+  .razorpay-payment-button {
+    background: hsl(0, 95%, 62%);
+    padding: 0.5em 1em;
+  }
+</style>
+<h1 class="text-2xl">
+  Payment of <span class="font-bold">₹{{amount_displayed}}</span> for
+  <span class="font-bold">{{fine.issue.book.name}}</span> (issue-id :
+  {{fine.issue.id}})
+</h1>
+<ul class="divide-y divide-dashed divide-gray-300 list-disc">
+  <li>
+    <div class="p-2 my-2">
+      <h2 class="text-lg mb-2">
+        Either Pay with Card / Net Banking / UPI / Wallets
+      </h2>
+
+      <form method="POST" action="/paystatus/{{fine.id}}/">
+        {% csrf_token %}
+        <script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          data-key="{{razor_id}}"
+          data-amount="{{amount}}"
+          data-currency="INR"
+          data-order_id="{{reciept}}"
+          data-buttontext="Proceed to Payment"
+          data-name="Fine for Issue Id - {{fine.issue.id}} "
+          data-description="{{fine.issue.book}}"
+          data-prefill.name="{{fine.student.first_name}}"
+          
+          data-theme.color="#7C3AED"
+        ></script>
+        <input type="hidden" custom="Hidden Element" name="hidden" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <h2 class="my-2 p-2 text-xl">Or Pay with Cash to Librarian In-Person</h2>
+  </li>
+</ul>
+{% endblock content %}
+
+<!-- data-prefill.contact="9999999999"
+          data-prefill.email="technoindia@example.com"
+          data-readonly.contact="true"
+          data-readonly.email="true" -->

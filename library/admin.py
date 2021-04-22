@@ -34,9 +34,10 @@ class IssueAdmin(admin.ModelAdmin):
 
 @admin.register(Fine)
 class FineAdmin(admin.ModelAdmin):
-    list_display=('student','amount')
+    list_display=('student','amount','order_id','paid')
     autocomplete_fields = ['student']
-    search_fields=['student__student_id__username']
+    list_filter=('paid',)
+    search_fields=['student__student_id__username','order_id']
     list_per_page=30
 
 
