@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=an0opy74a%d(plj5e@6-gtc=d&(%t7(teo3uoy&$((#w67_m+'
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -111,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -133,5 +136,5 @@ STATICFILES_DIRS=[
     os.path.join(BASE_DIR,'static')
 ]
 
-RAZORPAY_KEY_ID='rzp_test_CWLIScpEnbRpw7'
-RAZORPAY_KEY_SECRET='fEVERgb1O7TavSEvPeJdmBIG'
+RAZORPAY_KEY_ID=os.getenv("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET=os.getenv("RAZORPAY_KEY_SECRET")

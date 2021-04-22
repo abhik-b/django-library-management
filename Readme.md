@@ -1,12 +1,13 @@
 # Library Management System
 
-This is a simple library management system built for Major Project 2021
+This is a simple library management system built for Major Project 2021 by Abhik Bhattacharya (id : 181001102058) & Saikat Shee (id : 181001102053 )
 
 <!-- ### It is deployed [here](https://abhik-b.github.io/pomodro-timer/) -->
 
 This project is built with :
 
-![HTML5](https://www.w3.org/html/logo/downloads/HTML5_Logo_64.png) , ![CSS3](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/CSS3_logo_and_wordmark.svg/48px-CSS3_logo_and_wordmark.svg.png) , ![Vanilla JS](https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/64px-Unofficial_JavaScript_logo_2.svg.png) , ![Python](https://www.quintagroup.com/++theme++quintagroup-theme/images/logo_python_section.png) , ![Django](https://www.quintagroup.com/++theme++quintagroup-theme/images/logo_django_section.png)
+![HTML5](https://www.w3.org/html/logo/downloads/HTML5_Logo_64.png) , ![CSS3](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/CSS3_logo_and_wordmark.svg/48px-CSS3_logo_and_wordmark.svg.png) , ![Vanilla JS](https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/64px-Unofficial_JavaScript_logo_2.svg.png) , ![Python](https://www.quintagroup.com/++theme++quintagroup-theme/images/logo_python_section.png) , ![Django](https://www.quintagroup.com/++theme++quintagroup-theme/images/logo_django_section.png) ,
+<img alt="Tailwind CSS" width="350" src="https://refactoringui.nyc3.cdn.digitaloceanspaces.com/tailwind-logo.svg" />
 
 ---
 
@@ -16,15 +17,26 @@ This project is built with :
 
 1. see all the books in homepage
 2. search books based on author or name of the book or category of the book
+3. sort books or author alphabetically
 
 ##### Student can
 
 1.  login / signup ,
 2.  can request book
+3.  see their own issues and filter them based on :
 
-3.  see their own issues and filter them based on requested issues , issued books or all of them together
+    - requested issues ,
+    - issued books or
+    - all of them together
+
 4.  check their own fines
-5.  can see the days remaining to return a particular book or the number of days passed the return date of a particular book in the my fines page
+5.  can see
+
+    - the days remaining to return a particular book
+      **or**
+    - the number of days passed the return date of a particular book in the my fines page
+
+6.  Pay their fines online (powered by RazorPay)
 
 ##### Admin can
 
@@ -41,15 +53,18 @@ This project is built with :
 
 3.  accept a issue :
 
-    - either from the dashboard where admin has to manually select return date
-    - or from the Issue requests page where return date is automatically calculated
+    - from the dashboard where admin has to manually select return date
+      **or**
+    - from the Issue requests page where return date is automatically calculated
 
 4.  add , delete search books and filter books based on author
 5.  add , delete , search author
-6.  calculate fine by clicking a button , create, delete fine ,search fines for studentid
-7.  search , modify,add,delete students , filter them based on department and check all fines and issues of that student
-8.  can see the last-login , date joined & the student associated to a particular user
-9.  can change password for any user
+6.  calculate fine by clicking a button ,
+7.  create, delete fine ,search fines for studentid
+8.  toggle fine paid status (if paid in cash)
+9.  search ,modify,add,delete students , filter them based on department and check all fines and issues of that student
+10. can see the last-login , date joined & the student associated to a particular user
+11. can change password for any user
 
 ##### More ...
 
@@ -96,8 +111,60 @@ We run a for loop and pass all the issues to this calculate fine function. Then:
 - Whenever admin clicks on "_Calculate Fine_" button
 - Whenever a student opens his "_My Fines_" page
 
----
+**Payment of Fines**
+
+- when a student clicks on pay button (in myfines page)
+- we create a razorpay order with a dict containing fine amount (coverted to int and multiplied by 100 because razorpay wants in paisa) , order_id, currency
+- then we send the user to the payfines page (payfines.html) with the amount (in paisa ) , razorpay key id, razorpay order id & amount (which should be displayed)
+- user chooses proceed to payment online , selects paymode (Netbanking , Card , Wallet etc.) and pays the amount
+- we verify the payment status whether success or failure
+- then payment is (successfull/failure) message is shown on myfine page with (paid status / pay button) beside that fine
 
 ## Screenshots
 
-_Not Added Yet_
+- Signup Page
+  ![login](./screenshots/signup.png)
+- Login Page
+  ![login](./screenshots/login.png)
+- If Student ID already signed up
+  ![signup](./screenshots/signup-same-id.png)
+
+- Home Page for student
+  ![homepage](./screenshots/homepage-student.png)
+- Search Book
+  ![search-book](./screenshots/search-book.png)
+- Search Author
+  ![search-author](./screenshots/search-author.png)
+
+- My Issues
+  ![myissues](./screenshots/myissues.png)
+- My Fines
+  ![myfines](./screenshots/myfines.png)
+- Confirm Payment
+  ![paymentmode](./screenshots/confirmpayment.png)
+- Choose Payment Modes
+  ![paymentmode](./screenshots/choospaymode.png)
+- Pay Success
+  ![paymentmode](./screenshots/paysuccess.png)
+
+- Admin Dashboard
+  ![admin](./screenshots/admin-dashboard-home.png)
+
+- All Books (Admin)
+  ![allbooks](./screenshots/allbooks.png)
+
+- All issues , can be filtered ,searched (Admin)
+  ![allissues](./screenshots/all-issues.png)
+- Requested Issues (Admin)
+  ![allissues](./screenshots/issue-requests.png)
+
+- All fines , can be filtered ,searched (Admin)
+  ![allfines](./screenshots/allfines.png)
+
+- All Students , can be filtered ,searched (Admin)
+  ![allstudents](./screenshots/all-students.png)
+- Student Details (Admin)
+  ![student-details](./screenshots/student-details.png)
+- User Details (Admin)
+  ![student-details](./screenshots/user-details.png)
+  19

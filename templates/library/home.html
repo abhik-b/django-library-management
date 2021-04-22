@@ -19,17 +19,59 @@
       class="text-white hover:shadow-md rounded bg-blue-600 px-4 py-1 text-gray-100"
       name="author"
     >
-      Search Author
+      Author
     </button>
     <button
       class="hover:shadow-md bg-yellow-400 text-gray-900 rounded px-4 py-1"
       name="book"
     >
-      Search Book
+      Book
     </button>
   </div>
 </form>
-
+<!-- sorting alphabetically -->
+<form
+  class="flex flex-col sm:flex-row sm:space-x-4 mt-8 sm:items-center"
+  action="/sort/"
+>
+  <h3>Sort :</h3>
+  <select
+    class="rounded focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-500 text-base pr-3 pl-1 text-gray-900"
+    name="sort_type"
+    id="sort_type"
+  >
+    <option value="book">book</option>
+    <option value="author">author</option>
+  </select>
+  <ul id="sortable" class="flex flex-wrap space-x-1">
+    <li><button name="sort" value="A">A</button></li>
+    <li><button name="sort" value="B">B</button></li>
+    <li><button name="sort" value="C">C</button></li>
+    <li><button name="sort" value="D">D</button></li>
+    <li><button name="sort" value="E">E</button></li>
+    <li><button name="sort" value="F">F</button></li>
+    <li><button name="sort" value="G">G</button></li>
+    <li><button name="sort" value="H">H</button></li>
+    <li><button name="sort" value="I">I</button></li>
+    <li><button name="sort" value="J">J</button></li>
+    <li><button name="sort" value="K">K</button></li>
+    <li><button name="sort" value="L">L</button></li>
+    <li><button name="sort" value="M">M</button></li>
+    <li><button name="sort" value="N">N</button></li>
+    <li><button name="sort" value="O">O</button></li>
+    <li><button name="sort" value="P">P</button></li>
+    <li><button name="sort" value="Q">Q</button></li>
+    <li><button name="sort" value="R">R</button></li>
+    <li><button name="sort" value="S">S</button></li>
+    <li><button name="sort" value="T">T</button></li>
+    <li><button name="sort" value="U">U</button></li>
+    <li><button name="sort" value="V">V</button></li>
+    <li><button name="sort" value="W">W</button></li>
+    <li><button name="sort" value="X">X</button></li>
+    <li><button name="sort" value="Y">Y</button></li>
+    <li><button name="sort" value="Z">Z</button></li>
+  </ul>
+</form>
 <!-- all books -->
 <ul
   class="mt-10 md:px-4 lg:px-12 xl:px-0 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4"
@@ -149,4 +191,13 @@
   <h2>No Books Found</h2>
   {% endfor %}
 </ul>
-{% endif %} {% endblock content %}
+{% endif %}
+<script>
+  const options = document.querySelectorAll("#sort_type option");
+  options.forEach((option) => {
+    if (option.textContent === "{{selected | escapejs}}") {
+      option.selected = true;
+    }
+  });
+</script>
+{% endblock content %}

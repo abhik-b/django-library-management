@@ -13,8 +13,11 @@ def calcFine(issue):
         if(today>lastdate):
             diff=today-lastdate
             fine,created=Fine.objects.get_or_create(issue=issue,student=issue.student)
-            fine.amount=diff.days*10
-            fine.save()
+            if not fine.paid:
+                fine.amount=diff.days*10
+                fine.save()
+            else:
+                print('fine paid')
         else:
             return 'no fine'
     else:
